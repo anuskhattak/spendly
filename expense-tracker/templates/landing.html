@@ -4,6 +4,53 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+<style>
+    /* Modal Styles */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        position: relative;
+        width: 90%;
+        max-width: 800px;
+        background: #000;
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 2.5rem;
+        cursor: pointer;
+    }
+
+    .video-container {
+        width: 100%;
+        height: 100%;
+    }
+
+    .video-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -15,7 +62,7 @@
         <p class="hero-subtitle">Spendly helps you log expenses, spot patterns, and stay on budget — without the spreadsheet headache.</p>
         <div class="hero-actions">
             <a href="{{ url_for('register') }}" class="btn-primary">Create free account</a>
-            <a href="{{ url_for('login') }}" class="btn-ghost">See how it works</a>
+            <button id="open-modal" class="btn-ghost" style="cursor: pointer; font-size: inherit; font-family: inherit; border: 1px solid currentColor; background: none; padding: 0.75rem 1.5rem; border-radius: 6px;">See how it works</button>
         </div>
     </div>
     <div class="hero-visual">
@@ -89,4 +136,55 @@
     </div>
 </section>
 
+<!-- Video Modal -->
+<div id="video-modal" class="modal-overlay">
+    <div class="modal-content">
+        <button id="close-modal" class="modal-close">&times;</button>
+        <div id="video-placeholder" class="video-container"></div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('video-modal');
+        const openBtn = document.getElementById('open-modal');
+        const closeBtn = document.getElementById('close-modal');
+        const videoPlaceholder = document.getElementById('video-placeholder');
+        
+        // Placeholder YouTube URL
+        const videoId = 'dQw4w9WgXcQ'; // Rickroll
+        const videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+
+        openBtn.addEventListener('click', () => {
+            videoPlaceholder.innerHTML = `<iframe src="${videoUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Stop scrolling
+        });
+
+        const closeModal = () => {
+            videoPlaceholder.innerHTML = ''; // Stop video
+            modal.style.display = 'none';
+            document.body.style.overflow = ''; // Restore scrolling
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'flex') {
+                closeModal();
+            }
+        });
+    });
+</script>
 {% endblock %}
