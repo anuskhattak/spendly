@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"E:\\\\C_Drive_Moved_Safe\\\\Downloads\\\\expense-tracker\" -File | ForEach-Object { $_.Name })"
+    ]
+  }
+}
